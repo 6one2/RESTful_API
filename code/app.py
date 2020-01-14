@@ -21,6 +21,14 @@ class Item(Resource):
         items.append(item)
         return item, 201 # status code for created
 
-api.add_resource(Item, '/item/<string:name>')
+class ItemList(Resource):
+    def get(self):
+        if items:
+            return {'items': items}
 
-app.run(port = 5000, debug=False)
+        return {'error': f"No item created yet"}, 404
+
+api.add_resource(Item, '/item/<string:name>')
+api.add_resource(ItemList, '/items')
+
+app.run(port = 5000, debug=True)
