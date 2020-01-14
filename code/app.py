@@ -4,11 +4,22 @@ from flask_restful import Resource, Api
 app = Flask(__name__)
 api = Api(app)
 
-#inheritance from the class Resource
-class Student(Resource):
-    def get(self, name):
-        return {'student': name}
+# here we are not working with database but using python list.
+items = []
 
-api.add_resource(Student, '/student/<string:name>') # http://127.0.0.1:5000/student/Rolf
+#inheritance from the class Resource
+class Item(Resource):
+    def get(self, name):
+        for item in items:
+            if item['name']==name:
+                return item
+        return {'error': f'No item {name} was found'} 
+
+    def post(self, name):
+        item = {'name': name, 'price': 12.00}
+        items.append(item)
+        return item
+
+api.add_resource(Item, '/item/<string:name>')
 
 app.run(port = 5000)
