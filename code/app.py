@@ -13,13 +13,14 @@ class Item(Resource):
         for item in items:
             if item['name']==name:
                 return item
-        return {'error': f'No item {name} was found'} 
+
+        return {'error': f"No item '{name}' was found"}, 404 # status code for not found
 
     def post(self, name):
         item = {'name': name, 'price': 12.00}
         items.append(item)
-        return item
+        return item, 201 # status code for created
 
 api.add_resource(Item, '/item/<string:name>')
 
-app.run(port = 5000)
+app.run(port = 5000, debug=False)
