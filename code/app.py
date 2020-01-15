@@ -29,6 +29,16 @@ class Item(Resource):
         items.append(item)
         return item, 201 # status code for created
 
+    def delete(self, name):
+        # global items
+        # items = list(filter(lambda x:x['name']!=name, items))
+        item = next(filter(lambda x:x['name']==name, items), None)
+        if item:
+            items.remove(item)
+            return {'message': 'The item {name} has been deleted'}, 200
+
+        return {'error': f"The item {name} does not exists"}, 404
+
 class ItemList(Resource):
     def get(self):
         if items:
