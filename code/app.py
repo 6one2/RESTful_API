@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
+app.secret_key = 'gdjqoiuj7Gh'
 api = Api(app)
 
 # here we are not working with database but using python list.
