@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
 
@@ -19,16 +19,24 @@ class Item(Resource):
         item = next(filter(lambda x:x['name']==name, items), None)
         return {'item': item}, 200 if item else 404 # status codes (200:accepted, 404:not found)
 
+    # @jwt_required()
     def post(self, name):
+        parser = reqparse.RequestParser()
+        parser.add_argument('price',
+            type = float,
+            required = True,
+            help = 'This field cannot be left blank!'
+        )
         if next(filter(lambda x:x['name']==name, items), None):
             return {'message': 'An item of name {name} already exists.'}, 400 # bad request
 
-        request_data = request.get_json()
+        request_data = parser.parse_args()
         item = {'name': name,
                 'price': request_data['price']}
         items.append(item)
         return item, 201 # status code for created
 
+    # @jwt_required()
     def delete(self, name):
         # global items
         # items = list(filter(lambda x:x['name']!=name, items))
@@ -39,8 +47,17 @@ class Item(Resource):
 
         return {'error': f"The item {name} does not exists"}, 404
 
+    # @jwt_required()
     def put(self, name):
-        request_data = request.get_json()
+        parser = reqparse.RequestParser()
+        parser.add_argument('price',
+            type = float,
+            required=True,
+            help='This field cannot be left blank!'
+        )
+
+        request_data = parser.parse_args() # get only argument added to parser
+
         item = next(filter(lambda x:x['name']==name, items), None)
         if item is None:
             item = {'name': name,
