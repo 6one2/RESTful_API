@@ -131,3 +131,4 @@ dmypy.json
 # Test script
 test.py
 data.db
+code/data.db
