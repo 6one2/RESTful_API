@@ -11,8 +11,8 @@ class Item(Resource):
         help = 'This field cannot be left blank!'
     )
 
-    @jwt_required()
-    def get(self, name):
+    @classmethod
+    def find_by_name(cls, name):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -22,20 +22,34 @@ class Item(Resource):
         connection.close()
 
         if row:
-            return {"meassage": {"name": row[0], "price": row[1]}}
+            return {"item": {"name": row[0], "price": row[1]}}
+
+
+    # @jwt_required()
+    def get(self, name):
+        item = self.find_by_name(name)
+        if item:
+            return item
         return {"message": "Item not found"}, 404
 
     # @jwt_required()
     def post(self, name):
-        if next(filter(lambda x:x['name']==name, items), None):
-            return {'message': 'An item of name {name} already exists.'}, 400 # bad request
+        if self.find_by_name(name):
+            return {"message": f"The item {name} already exists"}, 400
 
-        request_data = Item.parser.parse_args()
+        data = Item.parser.parse_args()
+        item = {"name": name, "price": data["price"]}
 
-        item = {'name': name,
-                'price': request_data['price']}
-        items.append(item)
-        return item, 201 # status code for created
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "INSERT INTO items VALUES (?, ?)"
+        cursor.execute(query, (item['name'], item['price']))
+
+        connection.commit()
+        connection.close()
+
+        return item, 201
 
     # @jwt_required()
     def delete(self, name):
