@@ -53,14 +53,19 @@ class Item(Resource):
 
     # @jwt_required()
     def delete(self, name):
-        # global items
-        # items = list(filter(lambda x:x['name']!=name, items))
-        item = next(filter(lambda x:x['name']==name, items), None)
-        if item:
-            items.remove(item)
-            return {'message': 'The item {name} has been deleted'}, 200
+        if not self.find_by_name(name):
+            return {"message": f"The item {name} does not exists"}, 404
 
-        return {'error': f"The item {name} does not exists"}, 404
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "DELETE FROM items WHERE name=?"
+        cursor.execute(query, (name,))
+
+        connection.commit()
+        connection.close()
+
+        return {"message": f"Item {name} deleted"}
 
     # @jwt_required()
     def put(self, name):
@@ -77,7 +82,13 @@ class Item(Resource):
 
 class ItemList(Resource):
     def get(self):
-        if items:
-            return {'items': items}
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
 
-        return {'error': f"No item created yet"}, 404
+        query = "SELECT * FROM items"
+        result = cursor.execute(query)
+        row = result.fetchall()
+
+        connection.close()
+
+        return {"items": row}
