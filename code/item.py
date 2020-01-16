@@ -24,6 +24,27 @@ class Item(Resource):
         if row:
             return {"item": {"name": row[0], "price": row[1]}}
 
+    @classmethod
+    def insert(cls, item):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "INSERT INTO items VALUES (?, ?)"
+        cursor.execute(query, (item['name'], item['price']))
+
+        connection.commit()
+        connection.close()
+
+    @classmethod
+    def update(cls, item):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "UPDATE items SET price=? WHERE name=?"
+        cursor.execute(query, (item['price'],item['name']))
+
+        connection.commit()
+        connection.close()
 
     # @jwt_required()
     def get(self, name):
@@ -40,14 +61,10 @@ class Item(Resource):
         data = Item.parser.parse_args()
         item = {"name": name, "price": data["price"]}
 
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (item['name'], item['price']))
-
-        connection.commit()
-        connection.close()
+        try:
+            self.insert(item)
+        except:
+            return {"message": "An error occured inserting the item"}, 500 # internal server error
 
         return item, 201
 
@@ -65,20 +82,27 @@ class Item(Resource):
         connection.commit()
         connection.close()
 
-        return {"message": f"Item {name} deleted"}
+        return {"message": f"Item {name} deleted"}, 200
 
     # @jwt_required()
     def put(self, name):
-        request_data = Item.parser.parse_args() # get only argument added to parser
+        data = Item.parser.parse_args()
+        item = self.find_by_name(name)
+        updated_item = {"name": name, "price": data['price']}
 
-        item = next(filter(lambda x:x['name']==name, items), None)
-        if item is None:
-            item = {'name': name,
-                    'price': request_data['price']}
-            items.append(item)
+        if item:
+            try:
+                self.update(updated_item)
+            except:
+                return {"message": "An error occured inserting the item"}, 500 # internal server error
+
         else:
-            item.update(request_data)
-        return item
+            try:
+                self.insert(updated_item)
+            except:
+                return {"message": "An error occured inserting the item"}, 500 # internal server error
+
+        return updated_item
 
 class ItemList(Resource):
     def get(self):
