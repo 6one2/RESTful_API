@@ -1,4 +1,3 @@
-import sqlite3
 from flask_restful import Resource, reqparse
 from flask_jwt import JWT, jwt_required
 from models.item import ItemModel
@@ -60,13 +59,4 @@ class Item(Resource):
 class ItemList(Resource):
     # @jwt_required()
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM items"
-        result = cursor.execute(query)
-        row = result.fetchall()
-
-        connection.close()
-
-        return {"items": row}
+        return {"items": [item.json() for item in ItemModel.query.all()]}
