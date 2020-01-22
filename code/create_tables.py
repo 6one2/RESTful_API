@@ -1,4 +1,5 @@
 import sqlite3
+## make sure to run app.py and create_tables from same folder
 
 connection = sqlite3.connect('data.db')
 cursor = connection.cursor()

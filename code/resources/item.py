@@ -19,7 +19,7 @@ class Item(Resource):
             return item.json()
         return {"message": "Item not found"}, 404
 
-    # @jwt_required()
+    @jwt_required()
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {"message": f"The item {name} already exists"}, 400
@@ -34,7 +34,7 @@ class Item(Resource):
 
         return item.json(), 201
 
-    # @jwt_required()
+    @jwt_required()
     def delete(self, name):
         if not ItemModel.find_by_name(name):
             return {"message": f"The item {name} does not exists"}, 404
@@ -72,6 +72,7 @@ class Item(Resource):
 
 
 class ItemList(Resource):
+    # @jwt_required()
     def get(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
