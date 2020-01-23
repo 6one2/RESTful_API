@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse
-from flask_jwt import JWT, jwt_required
+from flask_jwt import jwt_required
 from models.item import ItemModel
 
 
@@ -9,6 +9,11 @@ class Item(Resource):
         type = float,
         required = True,
         help = 'This field cannot be left blank!'
+    )
+    parser.add_argument('store_id',
+        type = int,
+        required = True,
+        help = 'Every item needs a store id.'
     )
 
     # @jwt_required()
@@ -24,7 +29,7 @@ class Item(Resource):
             return {"message": f"The item {name} already exists"}, 400
 
         data = Item.parser.parse_args()
-        item = ItemModel(name, data['price'])
+        item = ItemModel(name, **data)
 
         try:
             item.save_to_db()
@@ -50,7 +55,7 @@ class Item(Resource):
         if item:
             item.price = data['price']
         else:
-            item = ItemModel(name, data['price'])
+            item = ItemModel(name, **data)
 
         item.save_to_db()
         return item.json()
