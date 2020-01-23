@@ -14,8 +14,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 app.secret_key = 'gdjqoiuj7Gh'
 api = Api(app)
 
+# create the database if it does not exists (no need for create_tables.py anymore)
+# still need to run app.py from /code folder
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+#security protocol for authentication of users
 jwt = JWT(app, authenticate, identity) # create endpoint /auth
 
+# create the endpoints link to ressources
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register')
