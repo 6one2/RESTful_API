@@ -9,6 +9,7 @@ verify_ssl = true
 flask-restful = "*"
 pipfile = "*"
 flask-sqlalchemy = "*"
+uwsgi = "*"
 
 [requires]
 python_version = "3.7"
