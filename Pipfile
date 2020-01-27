@@ -7,6 +7,7 @@ verify_ssl = true
 
 [packages]
 flask-restful = "*"
+flask-jwt = "*"
 pipfile = "*"
 flask-sqlalchemy = "*"
 uwsgi = "*"
