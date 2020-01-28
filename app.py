@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_restful import Api
 from flask_jwt import JWT
@@ -10,7 +12,8 @@ from resources.store import Store, StoreList
 from db import db
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db') # read the value of DATABASE_URL in the environment defined, otherwize default value 'sqlite:///data.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' #database for local test
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 app.secret_key = 'gdjqoiuj7Gh'
 api = Api(app)
