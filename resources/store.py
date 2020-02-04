@@ -34,5 +34,7 @@ class Store(Resource):
 
 class StoreList(Resource):
     def get(self):
-        return {"stores": [store.json() for store in StoreModel.query.all()]}
+        return {"stores": [store.json() for store in StoreModel.find_all()]}
+        # change query.all() to own find_all() class method to avoid interaction with database in ressources
+
         # return {"stores": list(map(lambda x: x.json(), StoreModel.query.all()))}
