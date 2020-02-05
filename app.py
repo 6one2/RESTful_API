@@ -2,10 +2,9 @@ import os
 
 from flask import Flask
 from flask_restful import Api
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager
 
-from security import authenticate, identity
-from resources.user import UserRegister, User
+from resources.user import UserRegister, User, UserLogin
 from resources.item import Item, ItemList
 from resources.store import Store, StoreList
 
@@ -17,7 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:/
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True # enable log from Flask
 
-app.secret_key = 'gdjqoiuj7Gh'
+app.secret_key = 'gdjqoiuj7Gh' # app.config['JWT_SECRET_KEY']
 api = Api(app)
 
 # need to work locally? in run.py for server deployment
@@ -25,8 +24,8 @@ api = Api(app)
 def create_tables():
     db.create_all()
 
-#security protocol for authentication of users
-jwt = JWT(app, authenticate, identity) # create endpoint /auth
+
+jwt = JWTManager(app) # not create auth endpoint
 
 # create the endpoints link to ressources
 api.add_resource(Store, '/store/<string:name>')
@@ -35,6 +34,7 @@ api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register')
 api.add_resource(User, '/user/<int:user_id>')
+api.add_resource(UserLogin, '/login')
 
 
 if __name__ == '__main__': # in case we were to import app.py -> do not run
