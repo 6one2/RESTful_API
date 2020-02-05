@@ -1,5 +1,11 @@
 from flask_restful import Resource, reqparse
-from flask_jwt_extended import jwt_required, get_jwt_claims, jwt_optional, get_jwt_identity
+from flask_jwt_extended import (
+    jwt_required,
+    get_jwt_claims,
+    jwt_optional,
+    get_jwt_identity,
+    fresh_jwt_required
+)
 from models.item import ItemModel
 
 
@@ -23,7 +29,7 @@ class Item(Resource):
             return item.json()
         return {"message": "Item not found"}, 404
 
-    @jwt_required
+    @fresh_jwt_required # requires a fresh access_token
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {"message": f"The item {name} already exists"}, 400
@@ -38,7 +44,7 @@ class Item(Resource):
 
         return item.json(), 201
 
-    @jwt_required
+    @fresh_jwt_required
     def delete(self, name):
         claims = get_jwt_claims()
         if not claims['is_admin']:
@@ -51,7 +57,7 @@ class Item(Resource):
         item.delete_from_db()
         return {"message": f"Item {name} deleted"}, 200
 
-    @jwt_required
+    @fresh_jwt_required
     def put(self, name):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
