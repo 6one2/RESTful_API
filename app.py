@@ -29,9 +29,9 @@ app.secret_key = 'gdjqoiuj7Gh' # app.config['JWT_SECRET_KEY']
 api = Api(app)
 
 # need to work locally? in run.py for server deployment
-@app.before_first_request
-def create_tables():
-    db.create_all()
+# @app.before_first_request
+# def create_tables():
+#     db.create_all()
 
 
 jwt = JWTManager(app) # not create auth endpoint
