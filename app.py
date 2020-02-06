@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
@@ -94,6 +94,9 @@ api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__': # in case we were to import app.py -> do not run
     db.init_app(app)
