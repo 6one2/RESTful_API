@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--Converted via md-to-html-->
+<html>
+ <head>
+ </head>
+ <body>
+  <h1>
+   Stores RESTful Api with authentication
+  </h1>
+  <p>
+   RESTful app for managing online store with Python, Flask and Flask extensions (-RESTful, -JWT, -SQLAlchemy).
+  </p>
+  <ul>
+   <li>
+    access SQL database for user authentication and items management (using SQLAlchemy)
+   </li>
+  </ul>
+  <ul>
+   <li>
+    handle secure user registration and authentication with Flask
+   </li>
+  </ul>
+  <p>
+   The app is deployed on
+   <a href="https://restful-api-store.herokuapp.com/">
+    heroku
+   </a>
+  </p>
+  <h2>
+   Use (with
+   <a href="https://www.postman.com">
+    postman
+   </a>
+   )
+  </h2>
+  <ul>
+   <li>
+    Register User @ /register
+   </li>
+  </ul>
+  <ul>
+   <li>
+    Login @ /login
+   </li>
+  </ul>
+  <ul>
+   <li>
+    Logout @ /logout
+   </li>
+  </ul>
+  <h3>
+   this requires 'fresh' login
+  </h3>
+  <ul>
+   <li>
+    Create/Update/Delete store with name, and store_id @ /store
+   </li>
+  </ul>
+  <ul>
+   <li>
+    Create/Update/Delete item with name, price and store_id @ /item
+   </li>
+  </ul>
+  <h3>
+   this requires login
+  </h3>
+  <ul>
+   <li>
+    Check items list @ /items
+   </li>
+  </ul>
+  <ul>
+   <li>
+    Check stores list @ /stores
+   </li>
+  </ul>
+ </body>
+</html>
